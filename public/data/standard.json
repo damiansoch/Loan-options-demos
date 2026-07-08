@@ -1,0 +1,24 @@
+{
+  "id": "standard",
+  "label": "Standard — 5 beneficiaries, 1 shared house",
+  "totalEstate": 1000000,
+  "loanToValue": 0.55,
+  "minLoanAmount": 100000,
+  "beneficiaries": [
+    { "id": "aoife", "name": "Aoife Mooney", "share": 150000, "color": "#4f46e5" },
+    { "id": "cormac", "name": "Cormac Mooney", "share": 120000, "color": "#059669" },
+    { "id": "niamh", "name": "Niamh Mooney", "share": 80000, "color": "#d97706" },
+    { "id": "patrick", "name": "Patrick Mooney", "share": 250000, "color": "#db2777" },
+    { "id": "siobhan", "name": "Siobhán Mooney", "share": 100000, "color": "#0891b2" }
+  ],
+  "sharedAssets": [
+    {
+      "id": "house",
+      "name": "The House",
+      "icon": "🏠",
+      "value": 300000,
+      "ownerIds": ["aoife", "cormac", "niamh"]
+    }
+  ],
+  "defaultSelected": ["aoife"]
+}

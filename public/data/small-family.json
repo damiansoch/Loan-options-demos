@@ -1,0 +1,22 @@
+{
+  "id": "small-family",
+  "label": "Small family — 3 beneficiaries, 1 shared house",
+  "totalEstate": 500000,
+  "loanToValue": 0.55,
+  "minLoanAmount": 100000,
+  "beneficiaries": [
+    { "id": "aoife", "name": "Aoife Mooney", "share": 130000, "color": "#4f46e5" },
+    { "id": "cormac", "name": "Cormac Mooney", "share": 120000, "color": "#059669" },
+    { "id": "niamh", "name": "Niamh Mooney", "share": 100000, "color": "#d97706" }
+  ],
+  "sharedAssets": [
+    {
+      "id": "cottage",
+      "name": "The Cottage",
+      "icon": "🏡",
+      "value": 150000,
+      "ownerIds": ["aoife", "cormac"]
+    }
+  ],
+  "defaultSelected": ["aoife"]
+}

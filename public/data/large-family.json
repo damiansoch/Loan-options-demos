@@ -1,0 +1,27 @@
+{
+  "id": "large-family",
+  "label": "Large family — 8 beneficiaries, 1 shared house",
+  "totalEstate": 1000000,
+  "loanToValue": 0.55,
+  "minLoanAmount": 100000,
+  "beneficiaries": [
+    { "id": "aoife", "name": "Aoife Mooney", "share": 95000, "color": "#4f46e5" },
+    { "id": "cormac", "name": "Cormac Mooney", "share": 85000, "color": "#059669" },
+    { "id": "niamh", "name": "Niamh Mooney", "share": 60000, "color": "#d97706" },
+    { "id": "patrick", "name": "Patrick Mooney", "share": 180000, "color": "#db2777" },
+    { "id": "siobhan", "name": "Siobhán Mooney", "share": 70000, "color": "#0891b2" },
+    { "id": "ronan", "name": "Ronan Mooney", "share": 65000, "color": "#7c3aed" },
+    { "id": "maeve", "name": "Maeve Mooney", "share": 75000, "color": "#ea580c" },
+    { "id": "declan", "name": "Declan Mooney", "share": 70000, "color": "#16a34a" }
+  ],
+  "sharedAssets": [
+    {
+      "id": "house",
+      "name": "The House",
+      "icon": "🏠",
+      "value": 300000,
+      "ownerIds": ["aoife", "cormac", "niamh"]
+    }
+  ],
+  "defaultSelected": ["aoife"]
+}

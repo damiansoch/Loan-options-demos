@@ -1,0 +1,27 @@
+[
+  {
+    "file": "standard.json",
+    "label": "Standard — 5 beneficiaries, 1 shared house",
+    "description": "The original scenario: five beneficiaries, one house jointly owned by three of them."
+  },
+  {
+    "file": "two-houses.json",
+    "label": "Two shared houses — 6 beneficiaries",
+    "description": "Six beneficiaries split across two separate jointly-owned houses, each needing all its owners included."
+  },
+  {
+    "file": "large-family.json",
+    "label": "Large family — 8 beneficiaries, 1 shared house",
+    "description": "Eight beneficiaries with smaller individual shares, showing how combining several is needed to reach the minimum."
+  },
+  {
+    "file": "small-family.json",
+    "label": "Small family — 3 beneficiaries, 1 shared house",
+    "description": "Just three beneficiaries, two of whom jointly own a smaller house."
+  },
+  {
+    "file": "complex-family.json",
+    "label": "Complex family — 10 beneficiaries, 3 overlapping houses",
+    "description": "Ten beneficiaries and three houses whose ownership overlaps — three people each co-own more than one house."
+  }
+]

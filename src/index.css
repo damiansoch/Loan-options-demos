@@ -1,0 +1,57 @@
+:root {
+  --slate-900: #0f172a;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50: #f8fafc;
+  --indigo: #4f46e5;
+  --emerald: #059669;
+  --amber: #d97706;
+  --pink: #db2777;
+  --cyan: #0891b2;
+  --violet: #7c3aed;
+  --white: #ffffff;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.12);
+
+  font: 16px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--slate-700);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.14), transparent 34rem),
+    radial-gradient(circle at 86% 6%, rgba(14, 165, 233, 0.12), transparent 32rem),
+    linear-gradient(135deg, #f8fafc 0%, #eef3f8 46%, #e2e8f0 100%);
+  padding: clamp(14px, 2.4vw, 28px);
+}
+
+button {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--slate-900);
+  margin: 0;
+}

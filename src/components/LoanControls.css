@@ -1,0 +1,163 @@
+.loan-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.calc-strip {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.calc-term {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.calc-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--slate-700);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-caption {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate-500);
+  white-space: nowrap;
+}
+
+.calc-op {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--slate-300);
+  flex-shrink: 0;
+  padding-bottom: 3px;
+}
+
+.calc-term.calc-result {
+  margin-left: auto;
+}
+
+.calc-term.calc-result .calc-value {
+  font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+  color: var(--indigo);
+  transition: color 0.2s ease;
+}
+
+.calc-term.calc-result .calc-value.blocked {
+  color: #dc2626;
+}
+
+.calc-term.calc-result .calc-caption {
+  color: var(--indigo);
+}
+
+.calc-term.calc-result:has(.blocked) .calc-caption {
+  color: #dc2626;
+}
+
+.below-min-banner {
+  background: #fef2f2;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  color: #991b1b;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.requested-section {
+  border-top: 1px solid var(--slate-200);
+  padding-top: 14px;
+  transition: opacity 0.2s ease;
+}
+
+.requested-section.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.requested-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--slate-500);
+  margin-bottom: 8px;
+}
+
+.requested-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.step-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--slate-300);
+  background: var(--slate-50);
+  color: var(--slate-700);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.step-btn:hover:not(:disabled) {
+  background: var(--slate-100);
+}
+
+.requested-input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--slate-300);
+  padding: 0 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--slate-300);
+  background: var(--white);
+  color: var(--slate-600);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--indigo);
+  color: var(--indigo);
+}
+
+.chip.active {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: var(--white);
+}

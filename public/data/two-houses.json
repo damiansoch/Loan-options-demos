@@ -1,0 +1,32 @@
+{
+  "id": "two-houses",
+  "label": "Two shared houses — 6 beneficiaries",
+  "totalEstate": 1400000,
+  "loanToValue": 0.55,
+  "minLoanAmount": 100000,
+  "beneficiaries": [
+    { "id": "aoife", "name": "Aoife Mooney", "share": 140000, "color": "#4f46e5" },
+    { "id": "cormac", "name": "Cormac Mooney", "share": 110000, "color": "#059669" },
+    { "id": "niamh", "name": "Niamh Mooney", "share": 90000, "color": "#d97706" },
+    { "id": "patrick", "name": "Patrick Mooney", "share": 260000, "color": "#db2777" },
+    { "id": "siobhan", "name": "Siobhán Mooney", "share": 95000, "color": "#0891b2" },
+    { "id": "ronan", "name": "Ronan Mooney", "share": 105000, "color": "#7c3aed" }
+  ],
+  "sharedAssets": [
+    {
+      "id": "house",
+      "name": "The House",
+      "icon": "🏠",
+      "value": 300000,
+      "ownerIds": ["aoife", "cormac", "niamh"]
+    },
+    {
+      "id": "cottage",
+      "name": "The Cottage",
+      "icon": "🏡",
+      "value": 300000,
+      "ownerIds": ["patrick", "siobhan", "ronan"]
+    }
+  ],
+  "defaultSelected": ["aoife"]
+}
