@@ -17,7 +17,7 @@ const VIEWS = [
 export default function App() {
   const { manifest, loading: manifestLoading } = useManifest();
   const [scenarioFile, setScenarioFile] = useState(null);
-  const [viewId, setViewId] = useState("donut");
+  const [viewId, setViewId] = useState("radial");
 
   useEffect(() => {
     if (!scenarioFile && manifest && manifest.length > 0) {
@@ -31,20 +31,15 @@ export default function App() {
   return (
     <div className="page-shell">
       <div className="card">
-        <header className="page-header">
+        <header className="page-header minimal">
           <div className="title-block">
-            <div className="eyebrow">Interactive estate model</div>
-            <h1>Loan Options — Concept Demos</h1>
-            <p className="subtitle">
-              Same underlying scenario data, four different ways to present it. Tap a
-              beneficiary to include or exclude them from the loan.
-            </p>
+            <h1>Loan Option Selection</h1>
           </div>
         </header>
 
-        <div className="toolbar">
+        <div className="toolbar minimal-toolbar">
           <label className="scenario-picker">
-            <span>Scenario</span>
+            <span>Estate</span>
             <select
               value={scenarioFile || ""}
               disabled={manifestLoading}
@@ -57,7 +52,8 @@ export default function App() {
               ))}
             </select>
           </label>
-          <div className="view-tabs">
+
+          <div className="view-tabs" aria-label="Visualisation type">
             {VIEWS.map((v) => (
               <button
                 key={v.id}
@@ -72,9 +68,13 @@ export default function App() {
         </div>
 
         <main className="app-main">
-          {scenario.loading && <p className="status-msg">Loading scenario…</p>}
-          {scenario.error && <p className="status-msg error">{scenario.error}</p>}
-          {scenario.data && !scenario.loading && <ActiveView scenario={scenario} />}
+          {scenario.loading && <p className="status-msg">Loading estate…</p>}
+          {scenario.error && (
+            <p className="status-msg error">{scenario.error}</p>
+          )}
+          {scenario.data && !scenario.loading && (
+            <ActiveView scenario={scenario} />
+          )}
         </main>
       </div>
     </div>

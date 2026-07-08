@@ -64,6 +64,14 @@ const describeRingSegment = (startAngle, endAngle) => {
   ].join(" ");
 };
 
+const firstNumber = (...values) => values.find((value) => typeof value === "number" && !Number.isNaN(value));
+
+const formatPercent = (value) => {
+  if (typeof value !== "number" || Number.isNaN(value)) return "—";
+  const normalized = value <= 1 ? value * 100 : value;
+  return `${normalized.toFixed(normalized % 1 === 0 ? 0 : 1)}%`;
+};
+
 export default function DonutView({ scenario }) {
   const { data, selected, includedAssetIds, toggleBeneficiary, toggleAsset, totals } = scenario;
 
@@ -120,6 +128,25 @@ export default function DonutView({ scenario }) {
       topPct: 50 - DONUT_MARKER_RADIUS_PCT * Math.cos(midRad),
     });
   });
+
+  const totalEstateValue = firstNumber(
+    totals?.totalEstateValue,
+    totals?.estateValue,
+    data.beneficiaries.reduce((sum, b) => sum + b.share, 0) + data.sharedAssets.reduce((sum, a) => sum + a.value, 0)
+  );
+  const selectedInterest = firstNumber(totals?.selectedInterest, totals?.selectedValue, totals?.eligibleValue);
+  const requestedAmount = firstNumber(totals?.requestedAmount, totals?.loanAmount, scenario.requestedAmount, scenario.loanAmount);
+  const availableAmount = firstNumber(totals?.availableAmount, totals?.availableEquity, totals?.maxAdvance);
+  const currentLtv = firstNumber(totals?.ltv, totals?.currentLtv, totals?.requestedLtv);
+
+  const summaryRows = [
+    { label: "Total estate value", value: formatCurrency(totalEstateValue) },
+    selectedInterest !== undefined && { label: "Selected interest", value: formatCurrency(selectedInterest) },
+    { label: "Maximum advance", value: formatCurrency(totals.maxAdvance), highlight: true, blocked: totals.belowMin },
+    requestedAmount !== undefined && { label: "Requested amount", value: formatCurrency(requestedAmount), strong: true },
+    currentLtv !== undefined && { label: "Current LTV", value: formatPercent(currentLtv) },
+    availableAmount !== undefined && { label: "Available amount", value: formatCurrency(availableAmount) },
+  ].filter(Boolean);
 
   return (
     <div className="donut-view">
@@ -247,6 +274,29 @@ export default function DonutView({ scenario }) {
                   {formatCurrency(totals.maxAdvance)}
                 </span>
               </div>
+            </div>
+          </div>
+
+          <div className="calc-card summary-card">
+            <div className="card-heading">
+              <span>Loan Summary</span>
+              {totals.belowMin && <strong className="summary-warning">Below minimum</strong>}
+            </div>
+            <div className="summary-list">
+              {summaryRows.map((row) => (
+                <div
+                  key={row.label}
+                  className={
+                    "summary-row" +
+                    (row.highlight ? " highlight" : "") +
+                    (row.blocked ? " blocked" : "") +
+                    (row.strong ? " strong" : "")
+                  }
+                >
+                  <span>{row.label}</span>
+                  <strong>{row.value}</strong>
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -31,16 +31,8 @@
 .visual-panel {
   min-height: clamp(500px, 61vh, 650px);
   background:
-    radial-gradient(
-      circle at 50% 46%,
-      rgba(79, 70, 229, 0.08),
-      transparent 33%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(248, 250, 252, 0.96),
-      rgba(255, 255, 255, 0.86)
-    );
+    radial-gradient(circle at 50% 46%, rgba(79, 70, 229, 0.08), transparent 33%),
+    linear-gradient(145deg, rgba(248, 250, 252, 0.96), rgba(255, 255, 255, 0.86));
 }
 
 .visual-panel::before,
@@ -64,12 +56,8 @@
 }
 
 .interests-panel {
-  max-height: auto;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.96),
-    rgba(248, 250, 252, 0.92)
-  );
+  max-height: clamp(500px, 61vh, 650px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
 }
 
 .control-panel {
@@ -143,12 +131,7 @@
   place-items: center;
   padding: clamp(10px, 1.15vw, 18px);
   border-radius: 17px;
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(79, 70, 229, 0.065),
-      transparent 37%
-    ),
+  background: radial-gradient(circle at center, rgba(79, 70, 229, 0.065), transparent 37%),
     linear-gradient(180deg, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0.5));
   border: 1px solid rgba(226, 232, 240, 0.84);
 }
@@ -169,9 +152,7 @@
 }
 
 .wheel svg line {
-  transition:
-    stroke 0.25s ease,
-    stroke-width 0.25s ease;
+  transition: stroke 0.25s ease, stroke-width 0.25s ease;
 }
 
 .hub {
@@ -183,12 +164,7 @@
   height: var(--hub-size);
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background:
-    radial-gradient(
-      circle at 32% 24%,
-      rgba(255, 255, 255, 0.28),
-      transparent 28%
-    ),
+  background: radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.28), transparent 28%),
     linear-gradient(135deg, #312e81, var(--indigo));
   color: var(--white);
   display: grid;
@@ -252,9 +228,7 @@
 .house-badge.active {
   background: #ecfdf5;
   opacity: 1;
-  box-shadow:
-    0 0 0 5px rgba(5, 150, 105, 0.15),
-    0 10px 22px rgba(5, 150, 105, 0.17);
+  box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.15), 0 10px 22px rgba(5, 150, 105, 0.17);
 }
 
 .ben-node {
@@ -287,19 +261,14 @@
   box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
   opacity: 0.45;
   transform: scale(0.88);
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
 }
 
 .ben-checkbox:checked ~ .ben-avatar {
   opacity: 1;
   transform: scale(1);
-  box-shadow:
-    0 0 0 5px rgba(79, 70, 229, 0.15),
-    0 14px 30px rgba(15, 23, 42, 0.21);
+  box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.15), 0 14px 30px rgba(15, 23, 42, 0.21);
 }
 
 .ben-check {
@@ -344,9 +313,7 @@
 .ben-house-flag span {
   opacity: 0.35;
   filter: grayscale(1);
-  transition:
-    opacity 0.2s ease,
-    filter 0.2s ease;
+  transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
 .ben-house-flag span.included {
@@ -643,9 +610,7 @@
   font-size: 0.72rem;
   opacity: 0.35;
   filter: grayscale(1);
-  transition:
-    opacity 0.2s ease,
-    filter 0.2s ease;
+  transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
 .radial-ben-flag.included {
@@ -751,14 +716,7 @@
 
 /* Make the existing LoanControls content feel like a proper calculation strip
    without requiring changes inside LoanControls itself. */
-.loan-controls-shell
-  :where(
-    .loan-controls,
-    .loan-controls-panel,
-    .loan-summary,
-    .summary-card,
-    .calculation-card
-  ) {
+.loan-controls-shell :where(.loan-controls, .loan-controls-panel, .loan-summary, .summary-card, .calculation-card) {
   background: transparent;
   border: 0;
   box-shadow: none;

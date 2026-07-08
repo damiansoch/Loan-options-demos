@@ -1,0 +1,297 @@
+.treemap-view {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  align-items: stretch;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .treemap-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+.treemap-panel {
+  border-right: 1px solid var(--slate-200);
+}
+
+@media (max-width: 900px) {
+  .treemap-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--slate-200);
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--slate-200);
+}
+
+.section-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-500);
+}
+
+.section-hint {
+  margin: 0;
+  color: var(--slate-300);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.treemap-canvas {
+  position: relative;
+  width: 100%;
+  height: clamp(440px, 65vh, 760px);
+  background: var(--slate-100);
+  padding: 12px;
+}
+
+.treemap-tile {
+  container-type: inline-size;
+  container-name: tile;
+  position: absolute;
+  box-sizing: border-box;
+  border: 1.5px solid color-mix(in srgb, var(--tile-color), white 55%);
+  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--tile-color), white 92%),
+    color-mix(in srgb, var(--tile-color), white 82%)
+  );
+  color: color-mix(in srgb, var(--tile-color), #0f172a 55%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 3px;
+  padding: clamp(6px, 7cqw, 14px);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+  text-align: left;
+}
+
+.treemap-tile:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tile-color), white 20%);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+.treemap-tile.active {
+  background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--tile-color), #ffffff 9%),
+      color-mix(in srgb, var(--tile-color), #0f172a 20%)
+    );
+  border-color: color-mix(in srgb, var(--tile-color), #ffffff 26%);
+  color: var(--white);
+  box-shadow: 0 20px 44px color-mix(in srgb, var(--tile-color), transparent 68%);
+}
+
+.tile-flag {
+  position: absolute;
+  top: clamp(6px, 6cqw, 12px);
+  right: clamp(6px, 6cqw, 12px);
+  min-width: clamp(18px, 20cqw, 30px);
+  height: clamp(18px, 20cqw, 30px);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 0 4px;
+  font-size: clamp(0.55rem, 9cqw, 0.9rem);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+}
+
+.tile-flag span {
+  opacity: 0.35;
+  filter: grayscale(1);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.tile-flag span.included {
+  opacity: 1;
+  filter: none;
+}
+
+.tile-name {
+  font-weight: 900;
+  font-size: clamp(0.7rem, 10cqw, 0.94rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tile-value {
+  font-weight: 800;
+  font-size: clamp(0.62rem, 7.5cqw, 0.76rem);
+  opacity: 0.9;
+}
+
+.tile-status {
+  display: inline-flex;
+  font-size: clamp(0.5rem, 6cqw, 0.6rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #92400e;
+  margin-top: 4px;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.tile-status.good {
+  color: #065f46;
+}
+
+.treemap-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(20px, 2.2vw, 28px);
+}
+
+.house-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--slate-200);
+}
+
+.house-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.house-panel:hover {
+  transform: translateY(-2px);
+}
+
+.house-panel.active {
+  background: linear-gradient(135deg, #78350f, #92400e);
+  border-color: rgba(146, 64, 14, 0.7);
+}
+
+.house-panel-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #fffbeb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.house-panel.active .house-panel-icon {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.house-panel-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.house-panel-title {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: var(--slate-900);
+}
+
+.house-panel.active .house-panel-title {
+  color: #fef3c7;
+}
+
+.house-panel-sub {
+  font-size: 0.74rem;
+  color: var(--slate-500);
+  margin-top: 2px;
+}
+
+.house-panel.active .house-panel-sub {
+  color: rgba(254, 243, 199, 0.78);
+}
+
+.house-panel-participation {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--slate-600);
+  margin-top: 3px;
+}
+
+.house-panel.active .house-panel-participation {
+  color: rgba(254, 243, 199, 0.9);
+}
+
+.house-panel-eligibility {
+  display: block;
+  font-size: 0.66rem;
+  font-style: italic;
+  color: var(--slate-500);
+  opacity: 0.85;
+  margin-top: 3px;
+}
+
+.house-panel.active .house-panel-eligibility {
+  color: rgba(254, 243, 199, 0.65);
+}
+
+.house-panel-status {
+  font-size: 0.64rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #92400e;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fffbeb;
+}
+
+.house-panel.active .house-panel-status {
+  color: #78350f;
+  background: #fef3c7;
+}

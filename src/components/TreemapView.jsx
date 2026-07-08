@@ -19,6 +19,7 @@ function squarifyLite(items, x, y, w, h) {
   const total = items.reduce((sum, i) => sum + i.value, 0);
   let running = 0;
   let splitIdx = 1;
+
   for (let i = 0; i < items.length; i++) {
     running += items[i].value;
     if (running >= total / 2) {
@@ -26,6 +27,7 @@ function squarifyLite(items, x, y, w, h) {
       break;
     }
   }
+
   splitIdx = Math.max(1, Math.min(items.length - 1, splitIdx));
 
   const groupA = items.slice(0, splitIdx);
@@ -39,6 +41,7 @@ function squarifyLite(items, x, y, w, h) {
       ...squarifyLite(groupB, x + wA, y, w - wA, h),
     ];
   }
+
   const hA = h * fracA;
   return [
     ...squarifyLite(groupA, x, y, w, hA),
@@ -63,82 +66,134 @@ export default function TreemapView({ scenario }) {
     .sort((p, q) => q.value - p.value);
 
   const tiles = squarifyLite(items, 0, 0, 100, 100);
+  const selectedTotal = items
+    .filter((i) => i.active)
+    .reduce((sum, i) => sum + i.value, 0);
+  const estateTotal = items.reduce((sum, i) => sum + i.value, 0);
+  const selectedCount = items.filter((i) => i.active).length;
+  const includedAssetCount = data.sharedAssets.filter((a) =>
+    isAssetIncluded(a, includedAssetIds)
+  ).length;
 
   return (
     <div className="treemap-view">
       <section className="treemap-panel">
-        <div className="panel-header">
-          <p className="section-label">Estate Interests</p>
-          <p className="section-hint">Box size reflects share value</p>
-        </div>
-        <div className="treemap-canvas">
-          {tiles.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              className={"treemap-tile" + (t.active ? " active" : "")}
-              style={{
-                left: `${t.x}%`,
-                top: `${t.y}%`,
-                width: `${t.w}%`,
-                height: `${t.h}%`,
-                "--tile-color": t.color,
-              }}
-              onClick={() => toggleBeneficiary(t.id)}
-            >
-              {t.flags.length > 0 && (
-                <span className="tile-flag">
-                  {t.flags.map((f, i) => (
-                    <span key={i} className={f.included ? "included" : ""}>
-                      {f.icon}
-                    </span>
-                  ))}
-                </span>
-              )}
-              <span className="tile-name">{t.name}</span>
-              <span className="tile-value">{formatCurrency(t.value)}</span>
-              <span className={"tile-status" + (t.alone ? " good" : "")}>
-                {t.statusLabel}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {data.sharedAssets.length > 0 && (
-          <div className="house-panels">
-            {data.sharedAssets.map((a) => {
-              const included = isAssetIncluded(a, includedAssetIds);
-              return (
-                <button
-                  key={a.id}
-                  type="button"
-                  className={"house-panel" + (included ? " active" : "")}
-                  onClick={() => toggleAsset(a)}
-                >
-                  <span className="house-panel-icon">{a.icon}</span>
-                  <span className="house-panel-body">
-                    <span className="house-panel-title">
-                      {a.name} · {formatCurrency(a.value)}
-                    </span>
-                    <span className="house-panel-sub">
-                      {assetOwnersLabel(a, data.beneficiaries)}
-                    </span>
-                    <span className="house-panel-participation">
-                      {assetParticipationLabel(a, selected)}
-                    </span>
-                    <span className="house-panel-eligibility">{ASSET_ELIGIBILITY_NOTE}</span>
-                  </span>
-                  <span className="house-panel-status">{assetStatusLabel(included)}</span>
-                </button>
-              );
-            })}
+        <header className="treemap-hero">
+          <div>
+            <p className="section-label">Estate Interests</p>
+            <h2 className="treemap-title">Beneficiary share map</h2>
+            <p className="treemap-subtitle">
+              Compact visual selector. Box size reflects share value, not card priority.
+            </p>
           </div>
-        )}
+
+          <div className="treemap-stats" aria-label="Estate selection summary">
+            <span>
+              <strong>{selectedCount}</strong>
+              <small>selected</small>
+            </span>
+            <span>
+              <strong>{formatCurrency(selectedTotal)}</strong>
+              <small>requested interests</small>
+            </span>
+            <span>
+              <strong>{formatCurrency(estateTotal)}</strong>
+              <small>estate interests</small>
+            </span>
+          </div>
+        </header>
+
+        <div className="treemap-workspace">
+          <div className="treemap-canvas-wrap">
+            <div className="treemap-canvas">
+              {tiles.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={"treemap-tile" + (t.active ? " active" : "")}
+                  style={{
+                    left: `${t.x}%`,
+                    top: `${t.y}%`,
+                    width: `${t.w}%`,
+                    height: `${t.h}%`,
+                    "--tile-color": t.color,
+                  }}
+                  onClick={() => toggleBeneficiary(t.id)}
+                  title={`${t.name} · ${formatCurrency(t.value)} · ${t.statusLabel}`}
+                >
+                  {t.flags.length > 0 && (
+                    <span className="tile-flag">
+                      {t.flags.map((f, i) => (
+                        <span key={i} className={f.included ? "included" : ""}>
+                          {f.icon}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                  <span className="tile-content">
+                    <span className="tile-name">{t.name}</span>
+                    <span className="tile-value">{formatCurrency(t.value)}</span>
+                    <span className={"tile-status" + (t.alone ? " good" : "")}>
+                      {t.statusLabel}
+                    </span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {data.sharedAssets.length > 0 && (
+            <section className="asset-strip" aria-label="Conditional and shared estate assets">
+              <div className="asset-strip-header">
+                <div>
+                  <p className="asset-strip-kicker">Shared / conditional assets</p>
+                  <h3>Assets that may need separate consent or eligibility checks</h3>
+                </div>
+                <strong>
+                  {includedAssetCount}/{data.sharedAssets.length} included
+                </strong>
+              </div>
+
+              <div className="house-panels">
+                {data.sharedAssets.map((a) => {
+                  const included = isAssetIncluded(a, includedAssetIds);
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      className={"house-panel" + (included ? " active" : "")}
+                      onClick={() => toggleAsset(a)}
+                    >
+                      <span className="house-panel-icon">{a.icon}</span>
+                      <span className="house-panel-body">
+                        <span className="house-panel-title">
+                          {a.name} · {formatCurrency(a.value)}
+                        </span>
+                        <span className="house-panel-sub">
+                          {assetOwnersLabel(a, data.beneficiaries)}
+                        </span>
+                        <span className="house-panel-participation">
+                          {assetParticipationLabel(a, selected)}
+                        </span>
+                        <span className="house-panel-eligibility">
+                          {ASSET_ELIGIBILITY_NOTE}
+                        </span>
+                      </span>
+                      <span className="house-panel-status">{assetStatusLabel(included)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+        </div>
       </section>
 
-      <section className="treemap-side">
-        <LoanControls scenario={scenario} />
-      </section>
+      <aside className="treemap-side">
+        <div className="treemap-side-card">
+          <LoanControls scenario={scenario} />
+        </div>
+      </aside>
     </div>
   );
 }

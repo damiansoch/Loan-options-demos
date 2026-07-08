@@ -1,63 +1,123 @@
 .treemap-view {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  grid-template-columns: minmax(0, 1.72fr) minmax(300px, 0.82fr);
   align-items: stretch;
-  background: var(--white);
-  border: 1px solid var(--slate-200);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 32%),
+    var(--white);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: calc(var(--radius-lg) + 6px);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
   overflow: hidden;
 }
 
-@media (max-width: 900px) {
-  .treemap-view {
-    grid-template-columns: 1fr;
-  }
-}
-
 .treemap-panel {
-  border-right: 1px solid var(--slate-200);
+  min-width: 0;
+  border-right: 1px solid rgba(203, 213, 225, 0.9);
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.82), rgba(255, 255, 255, 0.96)),
+    var(--white);
 }
 
-@media (max-width: 900px) {
-  .treemap-panel {
-    border-right: none;
-    border-bottom: 1px solid var(--slate-200);
-  }
-}
-
-.panel-header {
+.treemap-hero {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--slate-200);
+  gap: clamp(18px, 3vw, 34px);
+  padding: clamp(20px, 2.4vw, 30px) clamp(20px, 2.6vw, 34px);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.82);
 }
 
 .section-label {
   margin: 0;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--slate-500);
+  color: var(--indigo);
 }
 
-.section-hint {
-  margin: 0;
-  color: var(--slate-300);
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-align: right;
+.treemap-title {
+  margin: 7px 0 0;
+  color: var(--slate-900);
+  font-size: clamp(1.05rem, 1.6vw, 1.42rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.treemap-subtitle {
+  margin: 7px 0 0;
+  color: var(--slate-500);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  max-width: 48ch;
+}
+
+.treemap-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(92px, auto));
+  gap: 8px;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.treemap-stats span {
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.055);
+}
+
+.treemap-stats strong {
+  color: var(--slate-900);
+  font-size: 0.88rem;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.treemap-stats small {
+  color: var(--slate-500);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.treemap-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.8vw, 22px);
+  padding: clamp(16px, 2.2vw, 28px);
+}
+
+.treemap-canvas-wrap {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  border-radius: 26px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.92)),
+    var(--slate-100);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 38px rgba(15, 23, 42, 0.07);
 }
 
 .treemap-canvas {
   position: relative;
   width: 100%;
-  height: clamp(440px, 65vh, 760px);
-  background: var(--slate-100);
-  padding: 12px;
+  height: clamp(300px, 38vh, 430px);
+  min-height: 300px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.92), transparent 26%),
+    var(--slate-100);
+  overflow: hidden;
 }
 
 .treemap-tile {
@@ -65,63 +125,103 @@
   container-name: tile;
   position: absolute;
   box-sizing: border-box;
-  border: 1.5px solid color-mix(in srgb, var(--tile-color), white 55%);
-  border-radius: 16px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--tile-color), white 92%),
-    color-mix(in srgb, var(--tile-color), white 82%)
-  );
+  border: 4px solid transparent;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--tile-color), white 92%),
+      color-mix(in srgb, var(--tile-color), white 82%)
+    )
+    padding-box,
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--tile-color), white 58%),
+      rgba(255, 255, 255, 0.62)
+    )
+    border-box;
   color: color-mix(in srgb, var(--tile-color), #0f172a 55%);
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  gap: 3px;
-  padding: clamp(6px, 7cqw, 14px);
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: clamp(6px, 4.8cqw, 11px);
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.25s ease, color 0.25s ease,
-    border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.18s ease,
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
   overflow: hidden;
   text-align: left;
 }
 
+.treemap-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.72), transparent 35%),
+    linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.03));
+  pointer-events: none;
+}
+
 .treemap-tile:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--tile-color), white 20%);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px) scale(1.005);
+  filter: saturate(1.05);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.12);
+  z-index: 2;
 }
 
 .treemap-tile.active {
-  background: linear-gradient(
+  background:
+    linear-gradient(
       145deg,
-      color-mix(in srgb, var(--tile-color), #ffffff 9%),
-      color-mix(in srgb, var(--tile-color), #0f172a 20%)
-    );
-  border-color: color-mix(in srgb, var(--tile-color), #ffffff 26%);
+      color-mix(in srgb, var(--tile-color), #ffffff 10%),
+      color-mix(in srgb, var(--tile-color), #0f172a 22%)
+    )
+    padding-box,
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--tile-color), #ffffff 26%),
+      color-mix(in srgb, var(--tile-color), #0f172a 2%)
+    )
+    border-box;
   color: var(--white);
-  box-shadow: 0 20px 44px color-mix(in srgb, var(--tile-color), transparent 68%);
+  box-shadow: 0 18px 38px color-mix(in srgb, var(--tile-color), transparent 70%);
+  z-index: 1;
+}
+
+.tile-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  max-width: calc(100% - 2px);
+  min-width: 0;
 }
 
 .tile-flag {
   position: absolute;
-  top: clamp(6px, 6cqw, 12px);
-  right: clamp(6px, 6cqw, 12px);
-  min-width: clamp(18px, 20cqw, 30px);
-  height: clamp(18px, 20cqw, 30px);
+  top: clamp(5px, 4cqw, 9px);
+  right: clamp(5px, 4cqw, 9px);
+  min-width: clamp(18px, 14cqw, 27px);
+  max-width: calc(100% - 10px);
+  min-height: clamp(18px, 14cqw, 27px);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 1px;
-  padding: 0 4px;
-  font-size: clamp(0.55rem, 9cqw, 0.9rem);
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+  padding: 0 5px;
+  font-size: clamp(0.52rem, 6.8cqw, 0.76rem);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+  z-index: 2;
 }
 
 .tile-flag span {
-  opacity: 0.35;
+  opacity: 0.28;
   filter: grayscale(1);
   transition: opacity 0.2s ease, filter 0.2s ease;
 }
@@ -132,10 +232,11 @@
 }
 
 .tile-name {
-  font-weight: 900;
-  font-size: clamp(0.7rem, 10cqw, 0.94rem);
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  display: block;
+  font-weight: 950;
+  font-size: clamp(0.58rem, 6.4cqw, 0.8rem);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -143,81 +244,149 @@
 }
 
 .tile-value {
-  font-weight: 800;
-  font-size: clamp(0.62rem, 7.5cqw, 0.76rem);
-  opacity: 0.9;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  font-weight: 900;
+  font-size: clamp(0.54rem, 5.2cqw, 0.68rem);
+  line-height: 1.1;
+  opacity: 0.86;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tile-status {
   display: inline-flex;
-  font-size: clamp(0.5rem, 6cqw, 0.6rem);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  padding: 3px 7px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #92400e;
-  margin-top: 4px;
+  width: fit-content;
   max-width: 100%;
-  white-space: normal;
-  text-align: center;
-  line-height: 1.2;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  font-size: clamp(0.44rem, 4.4cqw, 0.54rem);
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #92400e;
+  margin-top: 3px;
+  white-space: nowrap;
+  line-height: 1;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tile-status.good {
   color: #065f46;
 }
 
-.treemap-side {
+.treemap-tile.active .tile-status {
+  color: color-mix(in srgb, var(--tile-color), #0f172a 45%);
+}
+
+.asset-strip {
+  min-width: 0;
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top left, rgba(146, 64, 14, 0.08), transparent 34%),
+    rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.065);
+  overflow: hidden;
+}
+
+.asset-strip-header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  padding: clamp(20px, 2.2vw, 28px);
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(203, 213, 225, 0.76);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.92), rgba(255, 255, 255, 0.78));
+}
+
+.asset-strip-kicker {
+  margin: 0;
+  color: #92400e;
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.asset-strip-header h3 {
+  margin: 5px 0 0;
+  color: var(--slate-900);
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+.asset-strip-header strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  font-size: 0.72rem;
+  font-weight: 950;
+  white-space: nowrap;
 }
 
 .house-panels {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
   gap: 12px;
-  padding: 16px 20px 20px;
-  border-top: 1px solid var(--slate-200);
+  padding: 14px;
 }
 
 .house-panel {
-  display: flex;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
+  min-height: 96px;
   text-align: left;
-  background: var(--white);
-  border: 1px solid var(--slate-200);
-  border-radius: var(--radius-lg);
-  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(203, 213, 225, 0.86);
+  border-radius: 20px;
+  padding: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-md);
+  transition:
+    transform 0.18s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.055);
 }
 
 .house-panel:hover {
   transform: translateY(-2px);
+  border-color: rgba(146, 64, 14, 0.32);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1);
 }
 
 .house-panel.active {
-  background: linear-gradient(135deg, #78350f, #92400e);
-  border-color: rgba(146, 64, 14, 0.7);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(254, 243, 199, 0.26), transparent 30%),
+    linear-gradient(135deg, #78350f, #92400e);
+  border-color: rgba(146, 64, 14, 0.72);
 }
 
 .house-panel-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
   background: #fffbeb;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.12rem;
   flex-shrink: 0;
   transition: background 0.2s ease;
 }
@@ -227,16 +396,19 @@
 }
 
 .house-panel-body {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
 .house-panel-title {
-  font-size: 0.88rem;
-  font-weight: 900;
+  font-size: 0.82rem;
+  font-weight: 950;
   color: var(--slate-900);
+  line-height: 1.18;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .house-panel.active .house-panel-title {
@@ -244,9 +416,12 @@
 }
 
 .house-panel-sub {
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   color: var(--slate-500);
-  margin-top: 2px;
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .house-panel.active .house-panel-sub {
@@ -255,10 +430,13 @@
 
 .house-panel-participation {
   display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 800;
   color: var(--slate-600);
   margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .house-panel.active .house-panel-participation {
@@ -267,26 +445,30 @@
 
 .house-panel-eligibility {
   display: block;
-  font-size: 0.66rem;
+  font-size: 0.63rem;
   font-style: italic;
   color: var(--slate-500);
-  opacity: 0.85;
+  opacity: 0.82;
   margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .house-panel.active .house-panel-eligibility {
-  color: rgba(254, 243, 199, 0.65);
+  color: rgba(254, 243, 199, 0.68);
 }
 
 .house-panel-status {
-  font-size: 0.64rem;
-  font-weight: 900;
+  align-self: start;
+  font-size: 0.56rem;
+  font-weight: 950;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   color: #92400e;
   white-space: nowrap;
   flex-shrink: 0;
-  padding: 6px 10px;
+  padding: 5px 8px;
   border-radius: 999px;
   background: #fffbeb;
 }
@@ -294,4 +476,111 @@
 .house-panel.active .house-panel-status {
   color: #78350f;
   background: #fef3c7;
+}
+
+.treemap-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(18px, 2.4vw, 32px);
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.68), rgba(255, 255, 255, 0.94)),
+    var(--white);
+}
+
+.treemap-side-card {
+  width: 100%;
+  max-width: 430px;
+  position: sticky;
+  top: 22px;
+}
+
+@media (min-width: 901px) {
+  .treemap-view {
+    min-height: clamp(620px, 74vh, 860px);
+  }
+
+  .treemap-side {
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 1180px) {
+  .treemap-view {
+    grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.9fr);
+  }
+
+  .house-panels {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .treemap-view {
+    grid-template-columns: 1fr;
+  }
+
+  .treemap-panel {
+    border-right: none;
+    border-bottom: 1px solid rgba(203, 213, 225, 0.9);
+  }
+
+  .treemap-side {
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  .treemap-side-card {
+    max-width: none;
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .treemap-hero {
+    flex-direction: column;
+  }
+
+  .treemap-stats {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .treemap-canvas {
+    height: 390px;
+  }
+
+  .asset-strip-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .house-panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .treemap-workspace {
+    padding: 12px;
+  }
+
+  .treemap-canvas-wrap {
+    padding: 7px;
+    border-radius: 20px;
+  }
+
+  .treemap-canvas {
+    min-height: 380px;
+    border-radius: 16px;
+  }
+
+  .treemap-tile {
+    border-width: 3px;
+    border-radius: 14px;
+  }
+
+  .tile-status {
+    display: none;
+  }
 }

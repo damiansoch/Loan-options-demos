@@ -182,102 +182,92 @@
   gap: 12px;
 }
 
-.requested-input-row {
-  display: grid;
-  grid-template-columns: 30px minmax(128px, 190px) 30px;
-  align-items: center;
-  gap: 5px;
-  width: max-content;
-  max-width: 100%;
-  padding: 3px;
-  border: 1px solid var(--lc-line);
-  border-radius: 10px;
-  background: linear-gradient(180deg, #fff, var(--lc-soft));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.step-btn {
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: #fff;
-  color: var(--lc-ink);
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.07);
-  transition:
-    transform 0.16s ease,
-    border-color 0.16s ease,
-    color 0.16s ease,
-    background 0.16s ease;
-}
-
-.step-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  border-color: rgba(79, 70, 229, 0.38);
-  color: var(--lc-indigo);
-  background: #f8fafc;
-}
-
-.step-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.requested-money-field {
-  height: 30px;
-  min-width: 0;
+.requested-money-input {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 8px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.78);
-  transition:
-    border-color 0.16s ease,
-    box-shadow 0.16s ease,
-    background 0.16s ease;
+  gap: 8px;
+  min-width: 180px;
+  height: 38px;
+  padding: 0 12px;
+
+  background: #fff;
+  border: 1px solid var(--lc-line);
+  border-radius: 10px;
+
+  transition: 0.2s;
 }
 
-.requested-money-field:focus-within {
-  border-color: rgba(79, 70, 229, 0.55);
-  background: #fff;
+.requested-money-input:focus-within {
+  border-color: var(--lc-indigo);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
-.requested-currency {
+.currency {
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--lc-muted);
-  font-size: 0.76rem;
-  font-weight: 700;
-  line-height: 1;
 }
 
 .requested-input {
   flex: 1;
-  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  text-align: right;
+
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--lc-ink);
+
+  appearance: textfield;
+}
+
+.requested-input::-webkit-inner-spin-button,
+.requested-input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.step-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: #fff;
+  color: var(--lc-ink);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.step-btn:hover {
+  background: var(--lc-soft);
+}
+
+.requested-input {
+  flex: 1;
+  min-width: 60px;
   width: 100%;
-  height: 28px;
+  height: 26px;
   border: none;
   background: transparent;
   color: var(--lc-ink);
-  text-align: right;
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
   outline: none;
-  font-variant-numeric: tabular-nums;
+  appearance: textfield; /* Hides default ugly browser spinner arrows */
 }
 
-.requested-input::placeholder {
-  color: #94a3b8;
-  font-weight: 600;
+.requested-input::-webkit-outer-spin-button,
+.requested-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .preset-chips {
@@ -334,7 +324,9 @@
     gap: 8px;
   }
   .requested-input-row {
-    width: 100%;
-    grid-template-columns: 30px minmax(0, 1fr) 30px;
+    justify-content: space-between;
+  }
+  .requested-input {
+    flex: 1;
   }
 }

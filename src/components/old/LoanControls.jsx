@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import { formatCurrency, computeLoanPresets } from "../utils/calc";
 import "./LoanControls.css";
 
@@ -8,16 +7,6 @@ const firstNumber = (...values) =>
   values.find((value) => typeof value === "number" && !Number.isNaN(value));
 
 const clampPercent = (value) => Math.max(0, Math.min(100, value));
-
-const clampAmount = (value, min, max) => {
-  if (!Number.isFinite(value)) return min;
-  return Math.min(Math.max(value, min), max);
-};
-
-const toInputValue = (value) => {
-  if (value === "" || value === null || value === undefined) return "";
-  return String(value);
-};
 
 export default function LoanControls({ scenario }) {
   const { data, totals, requestedAmount, setRequestedAmount } = scenario;
@@ -40,14 +29,7 @@ export default function LoanControls({ scenario }) {
   );
 
   const maxAdvance = firstNumber(totals?.maxAdvance, 0);
-  const requested = usable ? firstNumber(Number(requestedAmount), 0) : 0;
-
-  const [draftAmount, setDraftAmount] = useState(toInputValue(requestedAmount));
-
-  useEffect(() => {
-    setDraftAmount(toInputValue(requestedAmount));
-  }, [requestedAmount]);
-
+  const requested = usable ? firstNumber(requestedAmount, 0) : 0;
   const availableAfterRequest = usable
     ? Math.max(maxAdvance - requested, 0)
     : 0;
@@ -59,40 +41,33 @@ export default function LoanControls({ scenario }) {
 
   const requestPercent =
     maxAdvance > 0 ? clampPercent((requested / maxAdvance) * 100) : 0;
+  const presets = usable ? computeLoanPresets(minLimit, maxAdvance) : [];
 
-  const presets = useMemo(
-    () => (usable ? computeLoanPresets(minLimit, maxAdvance) : []),
-    [usable, minLimit, maxAdvance],
-  );
-
-  const commitRequestedAmount = (value) => {
-    const parsed = Number(value);
-    const next = clampAmount(parsed, minLimit, maxAdvance);
-    setRequestedAmount(next);
-    setDraftAmount(String(next));
-  };
-
+  // 1. Allows natural typing without blocking midway digits
   const updateRequestedAmount = (nextValue) => {
-    const cleanValue = nextValue.replace(/[^0-9]/g, "");
-    setDraftAmount(cleanValue);
-
-    if (cleanValue === "") return;
-
-    const parsed = Number(cleanValue);
+    if (nextValue === "") {
+      setRequestedAmount("");
+      return;
+    }
+    const parsed = Number(nextValue);
     if (!Number.isFinite(parsed)) return;
-
-    const liveValue = Math.min(parsed, maxAdvance);
-    setRequestedAmount(liveValue);
+    setRequestedAmount(parsed);
   };
 
+  // 2. Enforces min/max boundaries when user finishes typing
   const handleBlur = () => {
-    commitRequestedAmount(draftAmount);
+    const current = Number(requestedAmount);
+    if (!Number.isFinite(current) || current < minLimit) {
+      setRequestedAmount(minLimit);
+    } else if (current > maxAdvance) {
+      setRequestedAmount(maxAdvance);
+    }
   };
 
+  // 3. Simple inline bounds clamping for the step buttons
   const stepAmount = (amount) => {
-    const next = clampAmount(amount, minLimit, maxAdvance);
+    const next = Math.min(Math.max(amount, minLimit), maxAdvance);
     setRequestedAmount(next);
-    setDraftAmount(String(next));
   };
 
   const metrics = [
@@ -158,13 +133,15 @@ export default function LoanControls({ scenario }) {
           <div>
             <span className="metric-label">Requested</span>
             <strong className="request-value">
-              {usable && draftAmount !== "" ? formatCurrency(requested) : "—"}
+              {usable && requestedAmount !== ""
+                ? formatCurrency(requested)
+                : "—"}
             </strong>
           </div>
           <div className="request-remaining">
             <span>Remaining</span>
             <strong>
-              {usable && draftAmount !== ""
+              {usable && requestedAmount !== ""
                 ? formatCurrency(availableAfterRequest)
                 : "—"}
             </strong>
@@ -186,26 +163,23 @@ export default function LoanControls({ scenario }) {
             >
               −
             </button>
+            <div className="requested-money-input">
+              <span className="currency">€</span>
 
-            <label className="requested-money-field" htmlFor="requestedInput">
-              <span className="requested-currency">€</span>
               <input
                 id="requestedInput"
-                type="text"
-                inputMode="numeric"
+                type="number"
                 className="requested-input"
                 disabled={!usable}
-                value={draftAmount}
+                min={minLimit}
+                max={maxAdvance}
+                step={1000}
+                value={requestedAmount}
                 onChange={(e) => updateRequestedAmount(e.target.value)}
                 onBlur={handleBlur}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") e.currentTarget.blur();
-                }}
-                placeholder={String(minLimit)}
-                aria-label="Requested loan amount"
+                onKeyDown={(e) => e.key === "Enter" && handleBlur()}
               />
-            </label>
-
+            </div>
             <button
               type="button"
               className="step-btn"
@@ -223,8 +197,8 @@ export default function LoanControls({ scenario }) {
                 <button
                   key={p.value}
                   type="button"
-                  className={`chip ${requested === p.value ? "active" : ""}`}
-                  onClick={() => stepAmount(p.value)}
+                  className={`chip ${requestedAmount === p.value ? "active" : ""}`}
+                  onClick={() => updateRequestedAmount(p.value)}
                   title={formatCurrency(p.value)}
                 >
                   {p.label || formatCurrency(p.value)}
