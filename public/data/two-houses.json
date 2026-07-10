@@ -28,5 +28,27 @@
       "ownerIds": ["patrick", "siobhan", "ronan"]
     }
   ],
+  "bankAccounts": [
+    {
+      "id": "account-a",
+      "name": "Family Bank Account",
+      "icon": "🏦",
+      "allocations": [
+        { "beneficiaryId": "aoife", "amount": 140000 },
+        { "beneficiaryId": "cormac", "amount": 110000 },
+        { "beneficiaryId": "niamh", "amount": 90000 }
+      ]
+    },
+    {
+      "id": "account-b",
+      "name": "Joint Savings Account",
+      "icon": "💰",
+      "allocations": [
+        { "beneficiaryId": "patrick", "amount": 260000 },
+        { "beneficiaryId": "siobhan", "amount": 95000 },
+        { "beneficiaryId": "ronan", "amount": 105000 }
+      ]
+    }
+  ],
   "defaultSelected": ["aoife"]
 }

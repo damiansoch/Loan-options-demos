@@ -23,5 +23,39 @@
       "ownerIds": ["aoife", "cormac", "niamh"]
     }
   ],
+  "bankAccounts": [
+    {
+      "id": "account-a",
+      "name": "Family Bank Account",
+      "icon": "🏦",
+      "allocations": [
+        { "beneficiaryId": "aoife", "amount": 95000 },
+        { "beneficiaryId": "cormac", "amount": 85000 },
+        { "beneficiaryId": "niamh", "amount": 60000 }
+      ]
+    },
+    {
+      "id": "account-b",
+      "name": "Patrick's Personal Account",
+      "icon": "💰",
+      "allocations": [{ "beneficiaryId": "patrick", "amount": 180000 }]
+    },
+    {
+      "id": "account-c",
+      "name": "Siobhán's Personal Account",
+      "icon": "👛",
+      "allocations": [{ "beneficiaryId": "siobhan", "amount": 70000 }]
+    },
+    {
+      "id": "account-d",
+      "name": "Credit Union Account",
+      "icon": "🪙",
+      "allocations": [
+        { "beneficiaryId": "ronan", "amount": 65000 },
+        { "beneficiaryId": "maeve", "amount": 75000 },
+        { "beneficiaryId": "declan", "amount": 70000 }
+      ]
+    }
+  ],
   "defaultSelected": ["aoife"]
 }

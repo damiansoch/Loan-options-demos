@@ -1,0 +1,38 @@
+{
+  "id": "independent",
+  "label": "Fully independent — 3 beneficiaries, no shared assets",
+  "totalEstate": 730000,
+  "loanToValue": 0.55,
+  "minLoanAmount": 100000,
+  "beneficiaries": [
+    { "id": "aoife", "name": "Aoife Mooney", "share": 200000, "color": "#4f46e5" },
+    { "id": "niamh", "name": "Niamh Mooney", "share": 90000, "color": "#d97706" },
+    { "id": "patrick", "name": "Patrick Mooney", "share": 60000, "color": "#db2777" }
+  ],
+  "sharedAssets": [
+    { "id": "house-aoife", "name": "Aoife's House", "icon": "🏠", "value": 200000, "ownerIds": ["aoife"] },
+    { "id": "house-niamh", "name": "Niamh's House", "icon": "🏘️", "value": 100000, "ownerIds": ["niamh"] },
+    { "id": "house-patrick", "name": "Patrick's House", "icon": "🏚️", "value": 80000, "ownerIds": ["patrick"] }
+  ],
+  "bankAccounts": [
+    {
+      "id": "account-aoife",
+      "name": "Aoife's Personal Account",
+      "icon": "🏦",
+      "allocations": [{ "beneficiaryId": "aoife", "amount": 200000 }]
+    },
+    {
+      "id": "account-niamh",
+      "name": "Niamh's Personal Account",
+      "icon": "👛",
+      "allocations": [{ "beneficiaryId": "niamh", "amount": 90000 }]
+    },
+    {
+      "id": "account-patrick",
+      "name": "Patrick's Personal Account",
+      "icon": "🪙",
+      "allocations": [{ "beneficiaryId": "patrick", "amount": 60000 }]
+    }
+  ],
+  "defaultSelected": ["aoife"]
+}

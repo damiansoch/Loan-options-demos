@@ -39,5 +39,45 @@
       "ownerIds": ["aoife", "cormac", "ronan", "maeve"]
     }
   ],
+  "bankAccounts": [
+    {
+      "id": "account-a",
+      "name": "Family Bank Account",
+      "icon": "🏦",
+      "allocations": [
+        { "beneficiaryId": "aoife", "amount": 90000 },
+        { "beneficiaryId": "cormac", "amount": 85000 },
+        { "beneficiaryId": "niamh", "amount": 70000 }
+      ]
+    },
+    {
+      "id": "account-b",
+      "name": "Joint Savings Account",
+      "icon": "💰",
+      "allocations": [
+        { "beneficiaryId": "patrick", "amount": 200000 },
+        { "beneficiaryId": "siobhan", "amount": 80000 }
+      ]
+    },
+    {
+      "id": "account-c",
+      "name": "Credit Union Account",
+      "icon": "🪙",
+      "allocations": [
+        { "beneficiaryId": "ronan", "amount": 75000 },
+        { "beneficiaryId": "maeve", "amount": 65000 }
+      ]
+    },
+    {
+      "id": "account-d",
+      "name": "Post Office Savings Account",
+      "icon": "📮",
+      "allocations": [
+        { "beneficiaryId": "declan", "amount": 60000 },
+        { "beneficiaryId": "eoin", "amount": 55000 },
+        { "beneficiaryId": "clodagh", "amount": 50000 }
+      ]
+    }
+  ],
   "defaultSelected": ["aoife"]
 }

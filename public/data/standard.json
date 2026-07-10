@@ -20,5 +20,29 @@
       "ownerIds": ["aoife", "cormac", "niamh"]
     }
   ],
+  "bankAccounts": [
+    {
+      "id": "account-a",
+      "name": "Family Bank Account",
+      "icon": "🏦",
+      "allocations": [
+        { "beneficiaryId": "aoife", "amount": 150000 },
+        { "beneficiaryId": "cormac", "amount": 120000 },
+        { "beneficiaryId": "niamh", "amount": 80000 }
+      ]
+    },
+    {
+      "id": "account-b",
+      "name": "Patrick's Personal Account",
+      "icon": "💰",
+      "allocations": [{ "beneficiaryId": "patrick", "amount": 250000 }]
+    },
+    {
+      "id": "account-c",
+      "name": "Siobhán's Personal Account",
+      "icon": "👛",
+      "allocations": [{ "beneficiaryId": "siobhan", "amount": 100000 }]
+    }
+  ],
   "defaultSelected": ["aoife"]
 }

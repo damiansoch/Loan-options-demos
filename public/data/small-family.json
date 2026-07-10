@@ -18,5 +18,22 @@
       "ownerIds": ["aoife", "cormac"]
     }
   ],
+  "bankAccounts": [
+    {
+      "id": "account-a",
+      "name": "Family Bank Account",
+      "icon": "🏦",
+      "allocations": [
+        { "beneficiaryId": "aoife", "amount": 130000 },
+        { "beneficiaryId": "cormac", "amount": 120000 }
+      ]
+    },
+    {
+      "id": "account-b",
+      "name": "Niamh's Personal Account",
+      "icon": "👛",
+      "allocations": [{ "beneficiaryId": "niamh", "amount": 100000 }]
+    }
+  ],
   "defaultSelected": ["aoife"]
 }

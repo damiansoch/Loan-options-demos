@@ -23,5 +23,10 @@
     "file": "complex-family.json",
     "label": "Complex family — 10 beneficiaries, 3 overlapping houses",
     "description": "Ten beneficiaries and three houses whose ownership overlaps — three people each co-own more than one house."
+  },
+  {
+    "file": "independent.json",
+    "label": "Fully independent — 3 beneficiaries, no shared assets",
+    "description": "Three beneficiaries, each with their own house and their own bank account — nothing is jointly owned, so anyone can borrow alone."
   }
 ]
