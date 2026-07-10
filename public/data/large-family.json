@@ -20,41 +20,107 @@
       "name": "The House",
       "icon": "🏠",
       "value": 300000,
-      "ownerIds": ["aoife", "cormac", "niamh"]
+      "ownerIds": ["aoife", "cormac", "niamh"],
+      "county": "Kildare",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "joint-tenancy"
     }
   ],
-  "bankAccounts": [
+  "estate": {
+    "realAndLeaseholdProperty": [
+      {
+        "id": "prop-house",
+        "name": "The House",
+        "icon": "🏠",
+        "value": 300000,
+        "county": "Kildare",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "joint-tenancy"
+      }
+    ],
+    "financialAssets": [
+      {
+        "id": "fin-family",
+        "name": "Family Bank Account",
+        "icon": "🏦",
+        "institution": "AIB",
+        "value": 240000,
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "fin-patrick",
+        "name": "Patrick's Personal Account",
+        "icon": "💰",
+        "institution": "Bank of Ireland",
+        "value": 180000,
+        "ownershipType": "sole"
+      },
+      {
+        "id": "fin-siobhan",
+        "name": "Siobhán's Personal Account",
+        "icon": "👛",
+        "institution": "Permanent TSB",
+        "value": 70000,
+        "ownershipType": "sole"
+      },
+      {
+        "id": "fin-credit-union",
+        "name": "Credit Union Account",
+        "icon": "🪙",
+        "institution": "Naas Credit Union",
+        "value": 210000,
+        "ownershipType": "joint-tenancy"
+      }
+    ],
+    "otherAssets": [
+      {
+        "id": "farm-machinery",
+        "category": "BusinessFarming",
+        "description": "Farm machinery and implements",
+        "value": 25000
+      },
+      {
+        "id": "contents",
+        "category": "HouseholdContents",
+        "description": "Household furniture and contents",
+        "value": 10000
+      }
+    ],
+    "debts": [
+      { "id": "debt-funeral", "creditor": "Funeral Home", "description": "Funeral expenses", "value": 7500 },
+      { "id": "debt-nursing", "creditor": "Riverside Nursing Home", "description": "Outstanding nursing home fees", "value": 17500 }
+    ]
+  },
+  "pools": [
     {
-      "id": "account-a",
-      "name": "Family Bank Account",
-      "icon": "🏦",
-      "allocations": [
-        { "beneficiaryId": "aoife", "amount": 95000 },
-        { "beneficiaryId": "cormac", "amount": 85000 },
-        { "beneficiaryId": "niamh", "amount": 60000 }
-      ]
+      "id": "pool-family",
+      "name": "Family Pool",
+      "beneficiaryIds": ["aoife", "cormac", "niamh"],
+      "lendableAssetIds": ["fin-family", "prop-house"],
+      "liabilityIds": ["debt-funeral", "debt-nursing"]
     },
     {
-      "id": "account-b",
-      "name": "Patrick's Personal Account",
-      "icon": "💰",
-      "allocations": [{ "beneficiaryId": "patrick", "amount": 180000 }]
+      "id": "pool-patrick",
+      "name": "Patrick's Pool",
+      "beneficiaryIds": ["patrick"],
+      "lendableAssetIds": ["fin-patrick"],
+      "liabilityIds": []
     },
     {
-      "id": "account-c",
-      "name": "Siobhán's Personal Account",
-      "icon": "👛",
-      "allocations": [{ "beneficiaryId": "siobhan", "amount": 70000 }]
+      "id": "pool-siobhan",
+      "name": "Siobhán's Pool",
+      "beneficiaryIds": ["siobhan"],
+      "lendableAssetIds": ["fin-siobhan"],
+      "liabilityIds": []
     },
     {
-      "id": "account-d",
-      "name": "Credit Union Account",
-      "icon": "🪙",
-      "allocations": [
-        { "beneficiaryId": "ronan", "amount": 65000 },
-        { "beneficiaryId": "maeve", "amount": 75000 },
-        { "beneficiaryId": "declan", "amount": 70000 }
-      ]
+      "id": "pool-credit-union",
+      "name": "Credit Union Pool",
+      "beneficiaryIds": ["ronan", "maeve", "declan"],
+      "lendableAssetIds": ["fin-credit-union"],
+      "liabilityIds": []
     }
   ],
   "defaultSelected": ["aoife"]

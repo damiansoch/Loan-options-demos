@@ -5,6 +5,7 @@ import {
   beneficiaryOptionsTotal,
   getPoolsDebugInfo,
   explainOptionGeneration,
+  poolLiabilitiesTotal,
 } from "../utils/loanOptions";
 import { buildRingSegments } from "../utils/donutMath";
 import "./OptionsView.css";
@@ -37,11 +38,17 @@ function OptionCard({ data, option, index }) {
     gapDeg: MINI_GAP_DEG,
   });
 
-  const eligiblePortion = [...borrowerSet, ...consenterSet].reduce(
+  // Already net of each involved pool's own liabilities — a pool's debts
+  // only ever come off that pool's own money, never the whole estate's.
+  const netEligible = [...borrowerSet, ...consenterSet].reduce(
     (sum, id) => sum + beneficiaryOptionsTotal(id, data),
     0,
   );
-  const maxAdvance = Math.round(eligiblePortion * data.loanToValue);
+  const debtsInThisOption = option.activePools.reduce(
+    (sum, pool) => sum + poolLiabilitiesTotal(pool),
+    0,
+  );
+  const maxAdvance = Math.round(netEligible * data.loanToValue);
   const usable = maxAdvance >= data.minLoanAmount;
 
   const borrowerNames = data.beneficiaries.filter((b) => borrowerSet.has(b.id)).map((b) => b.name);
@@ -112,13 +119,20 @@ function OptionCard({ data, option, index }) {
         </div>
         <div className="option-stat">
           <span className="option-stat-label">Lendable value</span>
-          <strong className="option-stat-value">{formatCurrency(eligiblePortion)}</strong>
+          <strong className="option-stat-value">{formatCurrency(netEligible)}</strong>
         </div>
         <div className={"option-stat" + (usable ? " highlight" : "")}>
           <span className="option-stat-label">Max advance</span>
           <strong className="option-stat-value">{formatCurrency(maxAdvance)}</strong>
         </div>
       </div>
+
+      {debtsInThisOption > 0 && (
+        <div className="option-debts-note">
+          Lendable value is already net of {formatCurrency(debtsInThisOption)} in debts tied to
+          the pools involved here (funeral expenses, outstanding loans/mortgage).
+        </div>
+      )}
 
       <div className="option-legend">
         <div className="option-legend-row borrower">
@@ -232,40 +246,67 @@ function OptionsExplainer({ data, borrowerIds, nameOf }) {
         {borrowerNames.join(" & ")}?
       </div>
       <p className="debug-note">
-        Anyone pulled in drags in everyone else who shares a bank account or house with them — no
-        partial draws within a connected group. Option 1 is that minimum required group. Any
-        other money completely unrelated to it is a separate, optional add-on that also cascades
-        fully if it's pulled in — each combination of add-ons is its own option.
+        Step by step: check every share each affected person is part of, one person and one
+        share at a time. Anyone found in one of those shares becomes affected too. Once a round
+        of checking turns up no one new, the cascade for option 1 is complete — only then does it
+        check the rest of the estate for shares that never touched anyone affected at all.
       </p>
 
       <div className="debug-step-title">Option 1 — the minimum required group</div>
       <ol className="debug-waves">
         <li className="debug-wave">
           <div className="debug-step-title">
-            Wave 0 — Borrower{borrowerNames.length > 1 ? "s" : ""}
+            Round 0 — Borrower{borrowerNames.length > 1 ? "s" : ""} taking the loan
           </div>
           <div className="debug-wave-members">{borrowerNames.join(", ")}</div>
         </li>
 
-        {explanation.waves.map((wave, i) => (
+        {explanation.rounds.map((round, i) => (
           <li key={i} className="debug-wave">
             <div className="debug-step-title">
-              Wave {i + 1} — shares touching someone from wave {i}
+              Round {i + 1} — check every share each person from round {i} is part of
             </div>
-            <ul className="debug-pool-trace">
-              {wave.pools.map((p) => (
-                <li key={p.id}>
-                  <span className="debug-trace-pool">
-                    {p.icon} {p.name}
-                  </span>
-                  <span className="debug-trace-detail">members: {p.ownerIds.map(nameOf).join(", ")}</span>
-                </li>
+
+            <div className="debug-person-checks">
+              {round.personChecks.map((pc) => (
+                <div key={pc.personId} className="debug-person-check">
+                  <div className="debug-person-check-name">
+                    Checking {nameOf(pc.personId)}'s shares
+                  </div>
+                  {pc.poolChecks.length === 0 ? (
+                    <p className="debug-note">Not part of any bank account or house.</p>
+                  ) : (
+                    <ul className="debug-pool-trace">
+                      {pc.poolChecks.map((pcheck) => (
+                        <li key={pcheck.pool.id}>
+                          <span className="debug-trace-pool">
+                            {pcheck.pool.icon} {pcheck.pool.name}
+                            {pcheck.alreadyChecked && (
+                              <span className="debug-already-tag">already checked</span>
+                            )}
+                          </span>
+                          <span className="debug-trace-detail">
+                            members: {pcheck.pool.ownerIds.map(nameOf).join(", ")} —{" "}
+                            {pcheck.alreadyChecked
+                              ? "seen before, skipping"
+                              : pcheck.newMemberIds.length > 0
+                                ? `newly affected: ${pcheck.newMemberIds.map(nameOf).join(", ")}`
+                                : "everyone here is already affected"}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
+
             <div className="debug-wave-members">
-              Newly dragged in:{" "}
+              Newly affected after this round:{" "}
               <strong>
-                {wave.newMemberIds.length > 0 ? wave.newMemberIds.map(nameOf).join(", ") : "no one new"}
+                {round.newlyAffectedIds.length > 0
+                  ? round.newlyAffectedIds.map(nameOf).join(", ")
+                  : "no one — cascade complete"}
               </strong>
             </div>
           </li>
@@ -284,7 +325,10 @@ function OptionsExplainer({ data, borrowerIds, nameOf }) {
       {explanation.extraComponents.length > 0 && (
         <>
           <div className="debug-step-title" style={{ marginTop: 14 }}>
-            Separate money not connected to option 1 — each is an optional add-on
+            No further shares touch anyone affected — checking the rest of the estate for shares
+            that don't involve any affected beneficiary at all. Each one found (whether it's a
+            single sole-owned account or a whole cluster of shared ones) is a separate, optional
+            add-on.
           </div>
           <ul className="debug-pool-trace">
             {explanation.extraComponents.map((c, i) => (
@@ -335,6 +379,8 @@ function OptionsExplainer({ data, borrowerIds, nameOf }) {
 function DebugPanel({ data, borrowerIds = [] }) {
   const { pools, multiPool } = getPoolsDebugInfo(data);
   const nameOf = (id) => data.beneficiaries.find((b) => b.id === id)?.name ?? id;
+  const assignedDebtIds = new Set(pools.flatMap((p) => p.liabilities.map((d) => d.id)));
+  const unassignedDebts = (data.estate?.debts || []).filter((d) => !assignedDebtIds.has(d.id));
 
   return (
     <details className="debug-panel">
@@ -351,7 +397,14 @@ function DebugPanel({ data, borrowerIds = [] }) {
         <OptionsExplainer data={data} borrowerIds={borrowerIds} nameOf={nameOf} />
       )}
 
-      <div className="debug-pools-heading">All shares in this estate</div>
+      <p className="debug-note">
+        Real & leasehold property, financial assets, and debts belong to the deceased, not to any
+        beneficiary — they're flat estate records. A pool is what explicitly assigns beneficiaries
+        and estate items together (mirroring <code>ManualPool</code>); its net value is only then
+        divided evenly across its members.
+      </p>
+
+      <div className="debug-pools-heading">All pools in this estate</div>
       <div className="debug-pools">
         {pools.map((p) => (
           <div key={p.id} className="debug-pool">
@@ -360,21 +413,51 @@ function DebugPanel({ data, borrowerIds = [] }) {
               <span>{p.name}</span>
               <span className="debug-pool-kind">{p.kind}</span>
             </div>
+
+            <div className="debug-pool-sub-label">Beneficiaries</div>
             <ul className="debug-pool-members">
               {p.members.map((m) => (
                 <li key={m.beneficiaryId}>
-                  {nameOf(m.beneficiaryId)} — {formatCurrency(m.amount)}
+                  {nameOf(m.beneficiaryId)} — {formatCurrency(m.amount)} each
                 </li>
               ))}
             </ul>
+
+            <div className="debug-pool-sub-label">Estate assets in this pool</div>
+            <ul className="debug-pool-members">
+              {p.assets.map((a) => (
+                <li key={a.id}>
+                  {a.icon} {a.name} — {formatCurrency(a.value)}
+                </li>
+              ))}
+            </ul>
+
+            {p.liabilities.length > 0 && (
+              <>
+                <div className="debug-pool-sub-label">Liabilities on this pool</div>
+                <ul className="debug-pool-members">
+                  {p.liabilities.map((d) => (
+                    <li key={d.id}>
+                      {d.creditor} — {formatCurrency(d.value)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            <div className="debug-pool-net">
+              {formatCurrency(p.assetsTotal)}
+              {p.liabilitiesTotal > 0 && ` − ${formatCurrency(p.liabilitiesTotal)} debts`} ={" "}
+              <strong>{formatCurrency(p.netValue)} net</strong>
+            </div>
           </div>
         ))}
       </div>
 
       <div className="debug-multi">
-        <div className="debug-multi-heading">Beneficiaries in more than one share</div>
+        <div className="debug-multi-heading">Beneficiaries in more than one pool</div>
         {multiPool.length === 0 ? (
-          <p className="debug-note">No beneficiary sits in more than one share in this estate.</p>
+          <p className="debug-note">No beneficiary sits in more than one pool in this estate.</p>
         ) : (
           <ul>
             {multiPool.map((entry) => (
@@ -386,6 +469,48 @@ function DebugPanel({ data, borrowerIds = [] }) {
           </ul>
         )}
       </div>
+
+      {unassignedDebts.length > 0 && (
+        <div className="debug-multi">
+          <div className="debug-multi-heading">
+            Unassigned estate debts — not tied to any pool, so not deducted anywhere
+          </div>
+          <ul className="debug-pool-trace">
+            {unassignedDebts.map((d) => (
+              <li key={d.id}>
+                <span className="debug-trace-pool">{d.creditor}</span>
+                <span className="debug-trace-detail">
+                  {d.description} — {formatCurrency(d.value)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {data.estate?.otherAssets?.length > 0 && (
+        <div className="debug-multi">
+          <div className="debug-multi-heading">
+            Other estate assets — not eligible for this loan
+          </div>
+          <p className="debug-note">
+            Not <code>is_main</code> + <code>lendable</code> in the real system (vehicles,
+            contents, securities, business assets, etc.) — deceased-owned estate records like
+            everything above, but never referenced by any pool, so never counted toward any
+            beneficiary's total or any option.
+          </p>
+          <ul className="debug-pool-trace">
+            {data.estate.otherAssets.map((a) => (
+              <li key={a.id}>
+                <span className="debug-trace-pool">
+                  {a.category}: {a.description}
+                </span>
+                <span className="debug-trace-detail">{formatCurrency(a.value)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </details>
   );
 }

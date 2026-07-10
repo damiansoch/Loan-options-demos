@@ -18,36 +18,98 @@
       "name": "The House",
       "icon": "🏠",
       "value": 300000,
-      "ownerIds": ["aoife", "cormac", "niamh"]
+      "ownerIds": ["aoife", "cormac", "niamh"],
+      "county": "Dublin",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "joint-tenancy"
     },
     {
       "id": "cottage",
       "name": "The Cottage",
       "icon": "🏡",
       "value": 300000,
-      "ownerIds": ["patrick", "siobhan", "ronan"]
+      "ownerIds": ["patrick", "siobhan", "ronan"],
+      "county": "Wicklow",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "joint-tenancy"
     }
   ],
-  "bankAccounts": [
+  "estate": {
+    "realAndLeaseholdProperty": [
+      {
+        "id": "prop-house",
+        "name": "The House",
+        "icon": "🏠",
+        "value": 300000,
+        "county": "Dublin",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "prop-cottage",
+        "name": "The Cottage",
+        "icon": "🏡",
+        "value": 300000,
+        "county": "Wicklow",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "joint-tenancy"
+      }
+    ],
+    "financialAssets": [
+      {
+        "id": "fin-family",
+        "name": "Family Bank Account",
+        "icon": "🏦",
+        "institution": "AIB",
+        "value": 340000,
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "fin-joint",
+        "name": "Joint Savings Account",
+        "icon": "💰",
+        "institution": "Bank of Ireland",
+        "value": 460000,
+        "ownershipType": "joint-tenancy"
+      }
+    ],
+    "otherAssets": [
+      {
+        "id": "securities",
+        "category": "SecuritiesQuoted",
+        "description": "120 shares in Bank of Ireland plc",
+        "value": 15000
+      },
+      {
+        "id": "car",
+        "category": "CarsBoats",
+        "description": "2018 Volkswagen Golf",
+        "value": 9000
+      }
+    ],
+    "debts": [
+      { "id": "debt-funeral", "creditor": "Funeral Home", "description": "Funeral expenses", "value": 8000 },
+      { "id": "debt-card", "creditor": "Visa Card Services", "description": "Outstanding credit card balance", "value": 7000 }
+    ]
+  },
+  "pools": [
     {
-      "id": "account-a",
-      "name": "Family Bank Account",
-      "icon": "🏦",
-      "allocations": [
-        { "beneficiaryId": "aoife", "amount": 140000 },
-        { "beneficiaryId": "cormac", "amount": 110000 },
-        { "beneficiaryId": "niamh", "amount": 90000 }
-      ]
+      "id": "pool-family",
+      "name": "Family Pool",
+      "beneficiaryIds": ["aoife", "cormac", "niamh"],
+      "lendableAssetIds": ["fin-family", "prop-house"],
+      "liabilityIds": ["debt-funeral"]
     },
     {
-      "id": "account-b",
-      "name": "Joint Savings Account",
-      "icon": "💰",
-      "allocations": [
-        { "beneficiaryId": "patrick", "amount": 260000 },
-        { "beneficiaryId": "siobhan", "amount": 95000 },
-        { "beneficiaryId": "ronan", "amount": 105000 }
-      ]
+      "id": "pool-cottage",
+      "name": "Cottage Pool",
+      "beneficiaryIds": ["patrick", "siobhan", "ronan"],
+      "lendableAssetIds": ["fin-joint", "prop-cottage"],
+      "liabilityIds": ["debt-card"]
     }
   ],
   "defaultSelected": ["aoife"]

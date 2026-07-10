@@ -39,6 +39,7 @@ export default function LoanControls({ scenario }) {
     0,
   );
 
+  const debts = firstNumber(totals?.debts, 0);
   const maxAdvance = firstNumber(totals?.maxAdvance, 0);
   const requested = usable ? firstNumber(Number(requestedAmount), 0) : 0;
 
@@ -106,7 +107,10 @@ export default function LoanControls({ scenario }) {
     {
       label: "Eligible",
       value: formatCurrency(eligibleValue),
-      detail: `${Math.round(estateSelectedPercent)}% selected`,
+      detail:
+        debts > 0
+          ? `${Math.round(estateSelectedPercent)}% selected, less ${formatCurrency(debts)} debts`
+          : `${Math.round(estateSelectedPercent)}% selected`,
       type: "eligible",
     },
     {

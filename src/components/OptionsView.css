@@ -208,6 +208,17 @@
   color: var(--indigo);
 }
 
+.option-debts-note {
+  width: 100%;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px dashed rgba(217, 119, 6, 0.35);
+  border-radius: 8px;
+  padding: 6px 9px;
+}
+
 .option-legend {
   width: 100%;
   display: flex;
@@ -589,6 +600,36 @@
   font-size: 0.75rem;
 }
 
+.debug-already-tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--slate-500);
+  background: var(--slate-200);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.debug-person-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.debug-person-check {
+  border-left: 2px dashed var(--slate-300);
+  padding-left: 10px;
+}
+
+.debug-person-check-name {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--indigo);
+  margin-bottom: 4px;
+}
+
 .debug-forced-summary {
   font-size: 0.78rem;
   color: var(--slate-700);
@@ -690,6 +731,28 @@
   gap: 3px;
   font-size: 0.76rem;
   color: var(--slate-600);
+  margin-bottom: 6px;
+}
+
+.debug-pool-sub-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--slate-400);
+  margin: 8px 0 3px;
+}
+
+.debug-pool-net {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--slate-300);
+  font-size: 0.74rem;
+  color: var(--slate-600);
+}
+
+.debug-pool-net strong {
+  color: var(--slate-900);
 }
 
 .debug-multi {

@@ -22,61 +22,156 @@
       "name": "The House",
       "icon": "🏠",
       "value": 250000,
-      "ownerIds": ["aoife", "cormac", "niamh"]
+      "ownerIds": ["aoife", "cormac", "niamh"],
+      "county": "Dublin",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "joint-tenancy"
     },
     {
       "id": "cottage",
       "name": "The Cottage",
       "icon": "🏡",
       "value": 220000,
-      "ownerIds": ["patrick", "siobhan", "ronan"]
+      "ownerIds": ["patrick", "siobhan", "ronan"],
+      "county": "Wicklow",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "joint-tenancy"
     },
     {
       "id": "lodge",
       "name": "The Lodge",
       "icon": "🏘️",
       "value": 300000,
-      "ownerIds": ["aoife", "cormac", "ronan", "maeve"]
+      "ownerIds": ["aoife", "cormac", "ronan", "maeve"],
+      "county": "Wexford",
+      "propertyType": "Residential",
+      "tenure": "Leasehold",
+      "ownershipType": "tenancy-in-common"
     }
   ],
-  "bankAccounts": [
+  "estate": {
+    "realAndLeaseholdProperty": [
+      {
+        "id": "prop-house",
+        "name": "The House",
+        "icon": "🏠",
+        "value": 250000,
+        "county": "Dublin",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "prop-cottage",
+        "name": "The Cottage",
+        "icon": "🏡",
+        "value": 220000,
+        "county": "Wicklow",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "prop-lodge",
+        "name": "The Lodge",
+        "icon": "🏘️",
+        "value": 300000,
+        "county": "Wexford",
+        "propertyType": "Residential",
+        "tenure": "Leasehold",
+        "ownershipType": "tenancy-in-common"
+      }
+    ],
+    "financialAssets": [
+      {
+        "id": "fin-family",
+        "name": "Family Bank Account",
+        "icon": "🏦",
+        "institution": "AIB",
+        "value": 245000,
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "fin-joint",
+        "name": "Joint Savings Account",
+        "icon": "💰",
+        "institution": "Bank of Ireland",
+        "value": 280000,
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "fin-credit-union",
+        "name": "Credit Union Account",
+        "icon": "🪙",
+        "institution": "Wexford Credit Union",
+        "value": 140000,
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "fin-post-office",
+        "name": "Post Office Savings Account",
+        "icon": "📮",
+        "institution": "An Post Money",
+        "value": 165000,
+        "ownershipType": "joint-tenancy"
+      }
+    ],
+    "otherAssets": [
+      {
+        "id": "securities",
+        "category": "SecuritiesUnquoted",
+        "description": "Private company shareholding",
+        "value": 40000
+      },
+      {
+        "id": "timeshare",
+        "category": "OtherProperty",
+        "description": "Timeshare apartment (Spain)",
+        "value": 18000
+      }
+    ],
+    "debts": [
+      { "id": "debt-funeral", "creditor": "Funeral Home", "description": "Funeral expenses", "value": 9000 },
+      { "id": "debt-mortgage", "creditor": "AIB Mortgages", "description": "Outstanding mortgage balance", "value": 31000 }
+    ]
+  },
+  "pools": [
     {
-      "id": "account-a",
-      "name": "Family Bank Account",
-      "icon": "🏦",
-      "allocations": [
-        { "beneficiaryId": "aoife", "amount": 90000 },
-        { "beneficiaryId": "cormac", "amount": 85000 },
-        { "beneficiaryId": "niamh", "amount": 70000 }
-      ]
+      "id": "pool-family",
+      "name": "Family Pool",
+      "beneficiaryIds": ["aoife", "cormac", "niamh"],
+      "lendableAssetIds": ["fin-family", "prop-house"],
+      "liabilityIds": ["debt-funeral"]
     },
     {
-      "id": "account-b",
-      "name": "Joint Savings Account",
-      "icon": "💰",
-      "allocations": [
-        { "beneficiaryId": "patrick", "amount": 200000 },
-        { "beneficiaryId": "siobhan", "amount": 80000 }
-      ]
+      "id": "pool-lodge",
+      "name": "Lodge Pool",
+      "beneficiaryIds": ["aoife", "cormac", "ronan", "maeve"],
+      "lendableAssetIds": ["prop-lodge"],
+      "liabilityIds": ["debt-mortgage"]
     },
     {
-      "id": "account-c",
-      "name": "Credit Union Account",
-      "icon": "🪙",
-      "allocations": [
-        { "beneficiaryId": "ronan", "amount": 75000 },
-        { "beneficiaryId": "maeve", "amount": 65000 }
-      ]
+      "id": "pool-cottage",
+      "name": "Cottage Pool",
+      "beneficiaryIds": ["patrick", "siobhan", "ronan"],
+      "lendableAssetIds": ["fin-joint", "prop-cottage"],
+      "liabilityIds": []
     },
     {
-      "id": "account-d",
-      "name": "Post Office Savings Account",
-      "icon": "📮",
-      "allocations": [
-        { "beneficiaryId": "declan", "amount": 60000 },
-        { "beneficiaryId": "eoin", "amount": 55000 },
-        { "beneficiaryId": "clodagh", "amount": 50000 }
-      ]
+      "id": "pool-credit-union",
+      "name": "Credit Union Pool",
+      "beneficiaryIds": ["ronan", "maeve"],
+      "lendableAssetIds": ["fin-credit-union"],
+      "liabilityIds": []
+    },
+    {
+      "id": "pool-post-office",
+      "name": "Post Office Pool",
+      "beneficiaryIds": ["declan", "eoin", "clodagh"],
+      "lendableAssetIds": ["fin-post-office"],
+      "liabilityIds": []
     }
   ],
   "defaultSelected": ["aoife"]

@@ -10,28 +10,133 @@
     { "id": "patrick", "name": "Patrick Mooney", "share": 60000, "color": "#db2777" }
   ],
   "sharedAssets": [
-    { "id": "house-aoife", "name": "Aoife's House", "icon": "🏠", "value": 200000, "ownerIds": ["aoife"] },
-    { "id": "house-niamh", "name": "Niamh's House", "icon": "🏘️", "value": 100000, "ownerIds": ["niamh"] },
-    { "id": "house-patrick", "name": "Patrick's House", "icon": "🏚️", "value": 80000, "ownerIds": ["patrick"] }
+    {
+      "id": "house-aoife",
+      "name": "Aoife's House",
+      "icon": "🏠",
+      "value": 200000,
+      "ownerIds": ["aoife"],
+      "county": "Dublin",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "sole"
+    },
+    {
+      "id": "house-niamh",
+      "name": "Niamh's House",
+      "icon": "🏘️",
+      "value": 100000,
+      "ownerIds": ["niamh"],
+      "county": "Meath",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "sole"
+    },
+    {
+      "id": "house-patrick",
+      "name": "Patrick's House",
+      "icon": "🏚️",
+      "value": 80000,
+      "ownerIds": ["patrick"],
+      "county": "Louth",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "sole"
+    }
   ],
-  "bankAccounts": [
+  "estate": {
+    "realAndLeaseholdProperty": [
+      {
+        "id": "prop-aoife",
+        "name": "Aoife's House",
+        "icon": "🏠",
+        "value": 200000,
+        "county": "Dublin",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "sole"
+      },
+      {
+        "id": "prop-niamh",
+        "name": "Niamh's House",
+        "icon": "🏘️",
+        "value": 100000,
+        "county": "Meath",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "sole"
+      },
+      {
+        "id": "prop-patrick",
+        "name": "Patrick's House",
+        "icon": "🏚️",
+        "value": 80000,
+        "county": "Louth",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "sole"
+      }
+    ],
+    "financialAssets": [
+      {
+        "id": "fin-aoife",
+        "name": "Aoife's Personal Account",
+        "icon": "🏦",
+        "institution": "AIB",
+        "value": 200000,
+        "ownershipType": "sole"
+      },
+      {
+        "id": "fin-niamh",
+        "name": "Niamh's Personal Account",
+        "icon": "👛",
+        "institution": "Bank of Ireland",
+        "value": 90000,
+        "ownershipType": "sole"
+      },
+      {
+        "id": "fin-patrick",
+        "name": "Patrick's Personal Account",
+        "icon": "🪙",
+        "institution": "Permanent TSB",
+        "value": 60000,
+        "ownershipType": "sole"
+      }
+    ],
+    "otherAssets": [
+      {
+        "id": "car",
+        "category": "CarsBoats",
+        "description": "2021 Hyundai Tucson",
+        "value": 22000
+      }
+    ],
+    "debts": [
+      { "id": "debt-funeral", "creditor": "Funeral Home", "description": "Funeral expenses", "value": 6500 },
+      { "id": "debt-loan", "creditor": "Permanent TSB", "description": "Outstanding personal loan", "value": 8500 }
+    ]
+  },
+  "pools": [
     {
-      "id": "account-aoife",
-      "name": "Aoife's Personal Account",
-      "icon": "🏦",
-      "allocations": [{ "beneficiaryId": "aoife", "amount": 200000 }]
+      "id": "pool-aoife",
+      "name": "Aoife's Pool",
+      "beneficiaryIds": ["aoife"],
+      "lendableAssetIds": ["fin-aoife", "prop-aoife"],
+      "liabilityIds": ["debt-funeral", "debt-loan"]
     },
     {
-      "id": "account-niamh",
-      "name": "Niamh's Personal Account",
-      "icon": "👛",
-      "allocations": [{ "beneficiaryId": "niamh", "amount": 90000 }]
+      "id": "pool-niamh",
+      "name": "Niamh's Pool",
+      "beneficiaryIds": ["niamh"],
+      "lendableAssetIds": ["fin-niamh", "prop-niamh"],
+      "liabilityIds": []
     },
     {
-      "id": "account-patrick",
-      "name": "Patrick's Personal Account",
-      "icon": "🪙",
-      "allocations": [{ "beneficiaryId": "patrick", "amount": 60000 }]
+      "id": "pool-patrick",
+      "name": "Patrick's Pool",
+      "beneficiaryIds": ["patrick"],
+      "lendableAssetIds": ["fin-patrick", "prop-patrick"],
+      "liabilityIds": []
     }
   ],
   "defaultSelected": ["aoife"]

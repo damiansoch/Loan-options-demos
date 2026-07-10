@@ -1,43 +1,66 @@
-// Everything in the Options view is derived from "pools" — bank accounts and
-// shared assets (houses) alike — each just a group of beneficiary ids whose
-// money is co-mingled, so touching any one of them requires everyone in the
-// pool to consent. Bank accounts carry their own per-beneficiary allocations;
-// a house's value is split evenly across its owners, same as any other
-// jointly-held pool — an owner's stake is their own slice of it, not the
-// whole property.
-
-// A beneficiary's total benefit for this view — unlike the other 4 examples,
-// there's no separate "share" field here: it's rebuilt from whichever bank
-// accounts and houses actually pay into it, then summed into one figure.
-export function beneficiaryOptionsTotal(beneficiaryId, data) {
-  const accountTotal = (data.bankAccounts || []).reduce((sum, acc) => {
-    const allocation = acc.allocations.find((a) => a.beneficiaryId === beneficiaryId);
-    return sum + (allocation ? allocation.amount : 0);
-  }, 0);
-  const houseTotal = data.sharedAssets.reduce(
-    (sum, asset) =>
-      sum + (asset.ownerIds.includes(beneficiaryId) ? asset.value / asset.ownerIds.length : 0),
-    0,
+// Real & leasehold property and financial assets belong to the DECEASED —
+// they're flat estate records with no beneficiary attached (mirroring
+// RealAndLeaseholdProperty / FinancialAsset), same as debts belong to the
+// estate, not to any one beneficiary (mirroring IrishDebt). The only place
+// beneficiaries get linked to any of this is `data.pools` — an explicit,
+// agent-defined grouping (mirroring ManualPool) that says "these people, this
+// money, these liabilities". A pool is the unit of co-mingling: touching any
+// part of it requires everyone in it to consent, no partial draws. A
+// beneficiary can be listed in more than one pool — that's what lets the
+// cascade jump from one pool to another.
+function resolveAsset(assetId, data) {
+  const estate = data.estate || {};
+  return (
+    (estate.realAndLeaseholdProperty || []).find((a) => a.id === assetId) ||
+    (estate.financialAssets || []).find((a) => a.id === assetId)
   );
-  return accountTotal + houseTotal;
+}
+
+function resolveDebt(debtId, data) {
+  return (data.estate?.debts || []).find((d) => d.id === debtId);
 }
 
 function getPools(data) {
-  const accountPools = (data.bankAccounts || []).map((acc) => ({
-    id: acc.id,
-    kind: "account",
-    name: acc.name,
-    icon: acc.icon,
-    ownerIds: acc.allocations.map((a) => a.beneficiaryId),
-  }));
-  const assetPools = data.sharedAssets.map((a) => ({
-    id: a.id,
-    kind: "asset",
-    name: a.name,
-    icon: a.icon,
-    ownerIds: a.ownerIds,
-  }));
-  return [...accountPools, ...assetPools];
+  return (data.pools || []).map((p) => {
+    const assets = (p.lendableAssetIds || []).map((id) => resolveAsset(id, data)).filter(Boolean);
+    const liabilities = (p.liabilityIds || []).map((id) => resolveDebt(id, data)).filter(Boolean);
+    return {
+      id: p.id,
+      kind: "pool",
+      name: p.name,
+      icon: assets.map((a) => a.icon).join("") || "💼",
+      ownerIds: p.beneficiaryIds,
+      assets,
+      liabilities,
+    };
+  });
+}
+
+// A pool's own money, and what's already owed out of it — mirrors how
+// PoolManualLiability ties specific debts to specific pools rather than
+// deducting them from the whole estate at once.
+export function poolAssetsTotal(pool) {
+  return pool.assets.reduce((sum, a) => sum + a.value, 0);
+}
+
+export function poolLiabilitiesTotal(pool) {
+  return pool.liabilities.reduce((sum, d) => sum + d.value, 0);
+}
+
+export function poolNetValue(pool) {
+  return Math.max(poolAssetsTotal(pool) - poolLiabilitiesTotal(pool), 0);
+}
+
+// A beneficiary's total benefit for this view — unlike the other 4 examples,
+// there's no separate "share" field here, and there's no per-beneficiary
+// split recorded anywhere in the real system either: a pool's net value
+// (after its own liabilities) is simply divided evenly across everyone in
+// it, the same way a jointly-owned property's value already was.
+export function beneficiaryOptionsTotal(beneficiaryId, data) {
+  return getPools(data).reduce((sum, pool) => {
+    if (!pool.ownerIds.includes(beneficiaryId)) return sum;
+    return sum + poolNetValue(pool) / pool.ownerIds.length;
+  }, 0);
 }
 
 function growReachable(seed, pools) {
@@ -135,24 +158,27 @@ export function generateLoanOptions(data, borrowerIds) {
   return results;
 }
 
-// Debug-only view of the raw pool structure — every bank account and house,
-// who's in it and for how much, plus a flat list of beneficiaries who sit in
-// more than one pool (the people whose consent actually cascades between
-// options). Not used by the option-generation algorithm itself; this exists
-// purely so the shape of the underlying data can be sanity-checked on screen.
+// Debug-only view of the raw pool structure — every pool, who's in it, what
+// estate assets and liabilities feed into it, and its resulting net value
+// (evenly divided across its members) — plus a flat list of beneficiaries
+// who sit in more than one pool (the people whose consent actually cascades
+// between options). Not used by the option-generation algorithm itself;
+// this exists purely so the shape of the underlying data can be sanity-
+// checked on screen.
 export function getPoolsDebugInfo(data) {
-  const pools = getPools(data).map((p) => ({
-    ...p,
-    members: p.ownerIds.map((id) => ({
-      beneficiaryId: id,
-      amount:
-        p.kind === "account"
-          ? data.bankAccounts.find((acc) => acc.id === p.id).allocations.find(
-              (a) => a.beneficiaryId === id,
-            ).amount
-          : data.sharedAssets.find((a) => a.id === p.id).value / p.ownerIds.length,
-    })),
-  }));
+  const pools = getPools(data).map((p) => {
+    const netValue = poolNetValue(p);
+    return {
+      ...p,
+      assetsTotal: poolAssetsTotal(p),
+      liabilitiesTotal: poolLiabilitiesTotal(p),
+      netValue,
+      members: p.ownerIds.map((id) => ({
+        beneficiaryId: id,
+        amount: netValue / p.ownerIds.length,
+      })),
+    };
+  });
 
   const membership = {};
   pools.forEach((p) => {
@@ -169,50 +195,62 @@ export function getPoolsDebugInfo(data) {
 }
 
 // Debug-only trace of *why* generateLoanOptions produced what it did, for
-// the currently-selected borrower(s). Two parts: a wave-by-wave trace of
-// the mandatory fountain cascade that builds option 1 (wave 1 is whoever's
-// pulled in by a pool touching a borrower directly, wave 2 is whoever's
-// pulled in by a pool touching someone new from wave 1, and so on until
-// nothing new turns up), then the separate, completely unrelated chunks of
-// money that are each an optional add-on — the source of every option after
-// the first.
+// the currently-selected borrower(s) — walked one person and one share at a
+// time, not just summarized wave-by-wave, so every check the algorithm
+// makes is visible on screen. Round 1 checks each borrower's own shares one
+// by one, marking everyone found in them as affected. Round 2 then checks
+// each of THOSE newly-affected people's shares, one by one — noting which
+// shares are brand new versus already checked, and who (if anyone) each one
+// adds — and so on, round after round, until a round finds no one new at
+// all. Only once the cascade fully stops does it check whether any share in
+// the estate never got touched by any of this — those are the separate,
+// completely unrelated chunks of money that become optional add-ons, the
+// source of every option after the first.
 export function explainOptionGeneration(data, borrowerIds) {
   const borrowerSet = new Set(borrowerIds);
   const pools = getPools(data);
 
   const reach = new Set(borrowerSet);
-  const waves = [];
-  const consumedPoolIds = new Set();
-  let frontier = new Set(borrowerSet);
+  const checkedPoolIds = new Set();
+  const rounds = [];
+  let frontier = [...borrowerSet];
 
-  while (frontier.size > 0) {
-    const touchedPools = pools.filter(
-      (p) => !consumedPoolIds.has(p.id) && p.ownerIds.some((id) => frontier.has(id)),
-    );
-    if (touchedPools.length === 0) break;
+  while (frontier.length > 0) {
+    const newlyAffected = new Set();
 
-    const newMembers = new Set();
-    touchedPools.forEach((p) => {
-      consumedPoolIds.add(p.id);
-      p.ownerIds.forEach((id) => {
-        if (!reach.has(id)) {
-          reach.add(id);
-          newMembers.add(id);
-        }
+    const personChecks = frontier.map((personId) => {
+      const personPools = pools.filter((p) => p.ownerIds.includes(personId));
+
+      const poolChecks = personPools.map((p) => {
+        const alreadyChecked = checkedPoolIds.has(p.id);
+        checkedPoolIds.add(p.id);
+
+        const newMemberIds = [];
+        p.ownerIds.forEach((id) => {
+          if (!reach.has(id) && !newlyAffected.has(id)) {
+            newlyAffected.add(id);
+            newMemberIds.push(id);
+          }
+        });
+
+        return { pool: p, alreadyChecked, newMemberIds };
       });
+
+      return { personId, poolChecks };
     });
 
-    waves.push({ pools: touchedPools, newMemberIds: [...newMembers] });
-    frontier = newMembers;
+    newlyAffected.forEach((id) => reach.add(id));
+    rounds.push({ personChecks, newlyAffectedIds: [...newlyAffected] });
+    frontier = [...newlyAffected];
   }
 
   const consenterIds = [...reach].filter((id) => !borrowerSet.has(id)).sort();
-  const remainingPools = pools.filter((p) => !consumedPoolIds.has(p.id));
+  const remainingPools = pools.filter((p) => !checkedPoolIds.has(p.id));
   const extraComponents = partitionPoolsIntoComponents(remainingPools);
 
   return {
     borrowerIds: [...borrowerSet],
-    waves,
+    rounds,
     consenterIds,
     extraComponents,
     options: generateLoanOptions(data, borrowerIds),

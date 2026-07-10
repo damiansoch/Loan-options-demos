@@ -15,24 +15,71 @@
       "name": "The Cottage",
       "icon": "🏡",
       "value": 150000,
-      "ownerIds": ["aoife", "cormac"]
+      "ownerIds": ["aoife", "cormac"],
+      "county": "Cork",
+      "propertyType": "Residential",
+      "tenure": "Freehold",
+      "ownershipType": "joint-tenancy"
     }
   ],
-  "bankAccounts": [
+  "estate": {
+    "realAndLeaseholdProperty": [
+      {
+        "id": "prop-cottage",
+        "name": "The Cottage",
+        "icon": "🏡",
+        "value": 150000,
+        "county": "Cork",
+        "propertyType": "Residential",
+        "tenure": "Freehold",
+        "ownershipType": "joint-tenancy"
+      }
+    ],
+    "financialAssets": [
+      {
+        "id": "fin-family",
+        "name": "Family Bank Account",
+        "icon": "🏦",
+        "institution": "AIB",
+        "value": 250000,
+        "ownershipType": "joint-tenancy"
+      },
+      {
+        "id": "fin-niamh",
+        "name": "Niamh's Personal Account",
+        "icon": "👛",
+        "institution": "An Post Money",
+        "value": 100000,
+        "ownershipType": "sole"
+      }
+    ],
+    "otherAssets": [
+      {
+        "id": "car",
+        "category": "CarsBoats",
+        "description": "2016 Toyota Yaris",
+        "value": 6000
+      }
+    ],
+    "debts": [
+      { "id": "debt-funeral", "creditor": "Funeral Home", "description": "Funeral expenses", "value": 6000 },
+      { "id": "debt-bills", "creditor": "Various creditors", "description": "Outstanding medical and utility bills", "value": 4000 }
+    ]
+  },
+  "pools": [
     {
-      "id": "account-a",
-      "name": "Family Bank Account",
-      "icon": "🏦",
-      "allocations": [
-        { "beneficiaryId": "aoife", "amount": 130000 },
-        { "beneficiaryId": "cormac", "amount": 120000 }
-      ]
+      "id": "pool-family",
+      "name": "Family Pool",
+      "beneficiaryIds": ["aoife", "cormac"],
+      "lendableAssetIds": ["fin-family", "prop-cottage"],
+      "liabilityIds": ["debt-funeral", "debt-bills"]
     },
     {
-      "id": "account-b",
-      "name": "Niamh's Personal Account",
-      "icon": "👛",
-      "allocations": [{ "beneficiaryId": "niamh", "amount": 100000 }]
+      "id": "pool-niamh",
+      "name": "Niamh's Pool",
+      "beneficiaryIds": ["niamh"],
+      "lendableAssetIds": ["fin-niamh"],
+      "liabilityIds": []
     }
   ],
   "defaultSelected": ["aoife"]

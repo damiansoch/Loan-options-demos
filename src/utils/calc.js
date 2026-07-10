@@ -32,6 +32,14 @@ export function totalEstateValue(scenario) {
   return shares + assets;
 }
 
+// Estate liabilities (funeral expenses, outstanding loans/mortgage, etc.) —
+// these have to be cleared out of the estate before anything is available
+// to lend against, so they come straight off the top of the eligible pool
+// rather than being attributed to any one beneficiary's share.
+export function totalDebts(scenario) {
+  return (scenario.estate?.debts || []).reduce((sum, d) => sum + d.value, 0);
+}
+
 export function qualifiesAlone(beneficiary, scenario) {
   return Math.round(beneficiary.share * scenario.loanToValue) >= scenario.minLoanAmount;
 }
@@ -90,12 +98,24 @@ export function computeTotals(scenario, selectedIds, includedAssetIds) {
   );
   const includedAssets = scenario.sharedAssets.filter((a) => isAssetIncluded(a, includedAssetIds));
   const assetsValue = includedAssets.reduce((sum, a) => sum + a.value, 0);
-  const totalValue = selectedShare + assetsValue;
+  const grossValue = selectedShare + assetsValue;
+  const debts = totalDebts(scenario);
+  const totalValue = Math.max(grossValue - debts, 0);
   const maxAdvance = Math.round(totalValue * scenario.loanToValue);
   const hasAnySelection = selectedIds.size > 0 || includedAssets.length > 0;
   const belowMin = hasAnySelection && maxAdvance < scenario.minLoanAmount;
   const usable = !belowMin && maxAdvance >= scenario.minLoanAmount;
-  return { selectedShare, includedAssets, assetsValue, totalValue, maxAdvance, belowMin, usable };
+  return {
+    selectedShare,
+    includedAssets,
+    assetsValue,
+    grossValue,
+    debts,
+    totalValue,
+    maxAdvance,
+    belowMin,
+    usable,
+  };
 }
 
 export function clampRequested(value, min, max) {
